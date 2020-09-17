@@ -1,5 +1,17 @@
 # Phaser
 
+上手容易，文档齐全，案例多
+
+网站：
+
+​	国内：https://www.phaser-china.com/
+
+​	国外：https://phaser.io/
+
+
+
+环境搭建
+
 安装：
 
 npm
@@ -18,7 +30,13 @@ cdn
 
 
 
-server
+直接下载
+
+
+
+运行打包
+
+http-server（官网）
 
 ```
 npm install --global http-server
@@ -26,15 +44,29 @@ npm install --global http-server
 
 parcel
 
+配置无，自动下载插件，但无法自定义配置
+
+```
+npm install -g parcel-bundler
+```
+
 Webpack
 
+配置灵活，但配置繁琐
 
 
-初始化
+
+phaser-demo - ts + parcel 打包
+
+通过一个demo来简单介绍开发过程
+
+
+
+初始化 index.ts
 
 ```
 const game: Phaser.Game = new Phaser.Game({
-    type: Phaser.AUTO, //webGL 和 canvas
+    type: Phaser.AUTO, // WEBGL 和 CANVAS 渲染方式
     width: 800,
     height: 600,
     physics: {
@@ -55,23 +87,35 @@ const game: Phaser.Game = new Phaser.Game({
 场景切换
 
 ```
+// 场景添加
 game.scene.add('home', home)
 game.scene.add('loading', loading)
+
+// 通过start可以切换场景
 game.scene.start('loading')
 ```
 
+
+
 场景分为preload, create,update
 
-preload
+preload资源加载 preload.ts
 
 ```
 this.load.image('sky', images.sky);
 this.load.image('ground', images.ground);
 this.load.image('star', images.star);
 this.load.spritesheet('dude', images.dude, { frameWidth: 32, frameHeight: 48 });
+// 全局属性
+ this.$gameData = {
+        platforms: '',
+        player:'',
+        cursors:'',
+        stars:''
+    } 
 ```
 
-create
+create初始化世界 create.ts
 
 ```
 
@@ -126,9 +170,10 @@ create
     this.$gameData.cursors = this.input.keyboard.createCursorKeys();
 ```
 
-update
+update更新函数 update.ts
 
 ```
+     let {cursors,player} = this.$gameData
     if (cursors.left.isDown){
         player.setVelocityX(-160);
         player.anims.play('left', true); // 动画播放
